@@ -8,6 +8,9 @@ from pathlib import Path
 OUT = Path(tempfile.gettempdir()) / "song_audio"
 OUT.mkdir(exist_ok=True)
 PASSWORD = os.environ.get("APP_PASSWORD", "")
+COOKIES = OUT / "cookies.txt"
+if os.environ.get("YT_COOKIES_B64"):
+    COOKIES.write_bytes(base64.b64decode(os.environ["YT_COOKIES_B64"]))
 
 
 class H(BaseHTTPRequestHandler):
@@ -47,8 +50,9 @@ class H(BaseHTTPRequestHandler):
             speed = float(urllib.parse.parse_qs(u.query).get("speed", ["1.2"])[0])
         except ValueError:
             speed = 1.2
+        cookie_args = ["--cookies", str(COOKIES)] if COOKIES.exists() else []
         r = subprocess.run(
-            [sys.executable, "-m", "yt_dlp", "--no-playlist",
+            [sys.executable, "-m", "yt_dlp", "--no-playlist", *cookie_args,
              "-f", "bestaudio[ext=m4a]/bestaudio",
              "-o", str(OUT / "%(id)s.%(ext)s"), "--print", "after_move:filepath",
              "https://www.youtube.com/watch?v=" + m.group(1)],
