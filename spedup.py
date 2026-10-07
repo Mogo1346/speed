@@ -32,6 +32,7 @@ class H(BaseHTTPRequestHandler):
             speed = 1.2
         r = subprocess.run(
             [sys.executable, "-m", "yt_dlp", "--no-playlist",
+             "--cookies", "cookies.txt",
              "-f", "bestaudio[ext=m4a]/bestaudio",
              "-o", str(OUT / "%(id)s.%(ext)s"), "--print", "after_move:filepath",
              "https://www.youtube.com/watch?v=" + m.group(1)],
