@@ -73,5 +73,5 @@ class H(BaseHTTPRequestHandler):
             pass
 
 
-print("https://mogostream.vercel.app/VOD/spedup?song=קישור-יוטיוב")
+print("Server running on port 8000")
 ThreadingHTTPServer(("0.0.0.0", 8000), H).serve_forever()
